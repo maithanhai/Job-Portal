@@ -27,6 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = "jobs.User"
+
+import cloudinary.api
+cloudinary.config(
+    cloud_name='thanhai',
+    api_key='837549944776194',
+    api_secret='h4FQ4oJTptyewpDhijZSxBR0NnY'
+)
+
+CKEDITOR_UPLOAD_PATH = 'images/'
+
+
 
 # Application definition
 
@@ -37,6 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'jobs.apps.JobsConfig',
+    'cloudinary',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -74,8 +90,11 @@ WSGI_APPLICATION = 'jobportalapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'jobportaldb',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': '',
     }
 }
 
