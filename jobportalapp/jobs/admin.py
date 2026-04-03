@@ -1,20 +1,69 @@
 from multiprocessing.resource_tracker import register
 
+from django.contrib.auth.admin import UserAdmin
+
 from django.contrib import admin
-from django.contrib.admin import AdminSite
+from django.contrib.admin import AdminSite, ModelAdmin, StackedInline
+from jobs.models import Candidate, Job, Employer, User, CandidateProxy, EmployerProxy, Category, Skill, Resume
 
-from jobs.models import Candidate, Job, Tag, Employer, User
 
-
+#Admin
 class MyAdminSite(AdminSite):
     site_title = "Job Portal"
     site_header = "Quản lý hệ thống sàn việc làm trực tuyến"
     index_title = "Admin"
 
+
+class BaseRoleAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Thông tin tài khoản', {
+            'fields': ('username','password','email', 'full_name')
+        }),
+    )
+    role_type=None
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(role=self.role_type)
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.role = self.role_type
+            obj.set_password(obj.password)
+        super().save_model(request, obj, form, change)
+
+#Admin Candidate
+class CandidateInlineAdmin(admin.StackedInline):
+    model = Candidate
+    fk_name = 'user'
+
+class MyCandidateAdmin(BaseRoleAdmin):
+    role_type=User.CANDIDATE
+    inlines = [CandidateInlineAdmin]
+
+#Admin Employer
+class EmployerInlineAdmin(admin.StackedInline):
+    model=Employer
+    fk_name='user'
+
+class MyEmployerAdmin(BaseRoleAdmin):
+    role_type=User.EMPLOYER
+    inlines = [EmployerInlineAdmin]
+
+class MyCategoryAdmin(admin.ModelAdmin):
+    pass
+
+class SkillInLine(StackedInline):
+    model = Skill
+    fk_name='Resume'
+class MyResumeAdmin(admin.ModelAdmin):
+    model = Resume
+    inlines = [SkillInLine]
+
 # Register your models here.
 admin.site = MyAdminSite(name="Admin Site")
-admin.site.register(User)
-admin.site.register(Employer)
-admin.site.register(Candidate)
+admin.site.register(CandidateProxy,MyCandidateAdmin)
+admin.site.register(EmployerProxy,MyEmployerAdmin)
+admin.site.register(Category,MyCategoryAdmin)
 admin.site.register(Job)
-admin.site.register(Tag)
+admin.site.register(Skill)
+admin.site.register(Resume)
