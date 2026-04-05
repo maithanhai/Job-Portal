@@ -1,9 +1,12 @@
 from multiprocessing.resource_tracker import register
 
+from django.template.response import TemplateResponse
+
 from django.contrib.auth.admin import UserAdmin
 
 from django.contrib import admin
 from django.contrib.admin import AdminSite, ModelAdmin, StackedInline
+from django.urls import path
 from jobs.models import Candidate, Job, Employer, User, CandidateProxy, EmployerProxy, Category, Skill, Resume
 
 
@@ -12,6 +15,17 @@ class MyAdminSite(AdminSite):
     site_title = "Job Portal"
     site_header = "Quản lý hệ thống sàn việc làm trực tuyến"
     index_title = "Admin"
+    def get_urls(self):
+        return [
+            path('job-potarl-stats/',self.job_portal_stats)
+        ]
+    def job_portal_stats(self, request):
+        stats = {
+            
+        }
+        return TemplateResponse(request,'admin/stats.html',{
+            'stats': stats
+        })
 
 
 class BaseRoleAdmin(admin.ModelAdmin):

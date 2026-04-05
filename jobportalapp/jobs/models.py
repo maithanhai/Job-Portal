@@ -37,7 +37,7 @@ class CandidateProxy(User):
         verbose_name = "Candidate"
 class EmployerProxy(User):
     class Meta:
-        proxy = True,
+        proxy = True
         verbose_name = "Employer"
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,10 +64,9 @@ class Category(BaseModel): # Bang danh muc Job
     def __str__(self):
         return self.name
 
-        return f"{self.name} ({self.category.name if self.category else 'Chưa phân loại'})"
 class Job(BaseModel): #Bang thong tin Job cua nha tuyen dung
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
     employer = models.ForeignKey(Employer, on_delete=models.PROTECT,related_name='jobs')
     location = models.CharField(max_length=255)
     description = RichTextField()
@@ -76,16 +75,25 @@ class Job(BaseModel): #Bang thong tin Job cua nha tuyen dung
     is_negotiable = models.BooleanField(default=False, help_text="Lương thoả thuận")
     skill = models.ManyToManyField('Skill',blank=True)
     is_premium = models.BooleanField(default=False)
+    deadline = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.name
 
 class Application(BaseModel):
+    STATUS_CHOICES = (
+        ('PENDING', 'Chờ duyệt'),
+        ('REVIEWING', 'Đang xem xét'),
+        ('ACCEPTED', 'Chấp nhận'),
+        ('REJECTED', 'Từ chối'),
+    )
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE,related_name='applications')
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    cv_file = CloudinaryField('cv_file',blank=True,null=True,resource_type='raw')
-    status = models.CharField(max_length=100,default='PENDING')
+    job = models.ForeignKey(Job, on_delete=models.PROTECT)
+    resume = models.ForeignKey('Resume', on_delete=models.PROTECT)
+    status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='PENDING')
+    #Ghi chu them cho ung vien
+    cover_letter = models.TextField(max_length=500,blank=True)
     def __str__(self):
-        return f"{self.candidate.user.full_name} nộp vào {self.job.title}"
+        return f"{self.candidate.user.full_name} nộp vào {self.job.name}"
 
 class Payment(BaseModel):
     employer = models.ForeignKey(Employer, on_delete=models.PROTECT)
@@ -103,7 +111,7 @@ class SavedJob(BaseModel):
         unique_together = ('candidate', 'job') #1 nguoi khong luu 1 job 2 lan
 
     def __str__(self):
-        return f"{self.candidate.user.full_name} đã lưu {self.job.title}"
+        return f"{self.candidate.user.full_name} đã lưu {self.job.name}"
 class Skill(BaseModel):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -112,7 +120,7 @@ class Skill(BaseModel):
 
 class Resume(BaseModel):
     name = models.CharField(max_length=100,null=False,blank=False)
-    candidate = models.ForeignKey(Candidate,on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Candidate,on_delete=models.PROTECT)
     file_cv = CloudinaryField('cv_profile',blank=True,null=True,resource_type='raw')
     skills = models.ManyToManyField(Skill,blank=True)
     def __str__(self):

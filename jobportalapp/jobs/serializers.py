@@ -25,7 +25,12 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id','name','description']
 
+class JobSalarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = ['id','name','location','description','salary_min','salary_max']
+
 class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
-        fields = ['id','name','location','description','salary']
+        fields = ['id','name','location','description','is_negotiable']
