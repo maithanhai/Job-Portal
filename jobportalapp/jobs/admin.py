@@ -1,13 +1,11 @@
-from multiprocessing.resource_tracker import register
 
 from django.template.response import TemplateResponse
 
-from django.contrib.auth.admin import UserAdmin
-
 from django.contrib import admin
-from django.contrib.admin import AdminSite, ModelAdmin, StackedInline
+from django.contrib.admin import AdminSite, StackedInline
 from django.urls import path
-from jobs.models import Candidate, Job, Employer, User, CandidateProxy, EmployerProxy, Category, Skill, Resume
+from jobs.models import Candidate, Job, Employer, User, CandidateProxy, EmployerProxy, Category, Skill, Resume, \
+    Application
 
 
 #Admin
@@ -17,17 +15,24 @@ class MyAdminSite(AdminSite):
     index_title = "Admin"
     def get_urls(self):
         return [
-            path('job-potarl-stats/',self.job_portal_stats)
-        ]
+            path('stats/',self.job_portal_stats)
+        ]+super().get_urls()
+
     def job_portal_stats(self, request):
-        stats = {
-            
-        }
-        return TemplateResponse(request,'admin/stats.html',{
-            'stats': stats
+        context = self.each_context(request)
+        application_total = Application.objects.filter(active=True).count()
+        job_total = Job.objects.filter(active=True).count()
+        employer_total = Employer.objects.filter(active=True, is_verified=True).count()
+        candidate_total = Candidate.objects.filter(active=True).count()
+        context.update({
+            'stats': {
+                'application_total': application_total,
+                'job_total': job_total,
+                'employer_total': employer_total,
+                'candidate_total': candidate_total
+            }
         })
-
-
+        return TemplateResponse(request, 'admin/stats.html', context)
 class BaseRoleAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Thông tin tài khoản', {
