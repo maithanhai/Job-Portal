@@ -43,6 +43,12 @@ INTERNAL_IPS = [
 '127.0.0.1'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,6 +64,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -140,3 +147,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+#ClientID=4RBaTPi45bqlEIjO11fEOx96kNLNUzUz9znfijNw
+#ClientSecret=7holpkHCDzK9UtaFUBegW3Ta4I7V06E0dvwTp77qfPRwVkfvJCrObWICGccA73cNKEioUfozLCEl2Dpg4eOagWg6ORg0MDmVAq9LL4m26Q3fTkEBKJEqh1ODn09wufez
