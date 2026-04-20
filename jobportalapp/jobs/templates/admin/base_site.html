@@ -6,24 +6,26 @@
     <div id="site-name">
         <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
     </div>
-
-    <a href="/admin/stats/" style="
-    background-color: #f5dd5d;
-    color: #417690 !important;
-    padding: 4px 12px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 800;
-    margin-top: 5px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-transform: uppercase;
-">
-    <span class="bi bi-bar-chart-line-fill"> XEM THỐNG KÊ</span>
+    {% if user.is_authenticated and user.is_staff %}
+        {% if '/admin/stats/' not in request.path %}
+            <a href="/admin/stats/" style="
+                background-color: #f5dd5d;
+                color: #417690 !important;
+                padding: 4px 12px;
+                border-radius: 20px;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: 800;
+                margin-top: 5px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                text-transform: uppercase;">
+            <span> XEM THỐNG KÊ</span>
 </a>
 
+        {% endif %}
+    {% endif %}
 </div>
 
 {# Phần này giữ nguyên để không mất nút chuyển Dark/Light mode #}
