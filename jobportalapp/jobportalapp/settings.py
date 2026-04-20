@@ -39,7 +39,9 @@ cloudinary.config(
 
 CKEDITOR_UPLOAD_PATH = 'images/'
 
-
+INTERNAL_IPS = [
+'127.0.0.1'
+]
 
 # Application definition
 
@@ -50,10 +52,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'cloudinary',
     'ckeditor',
     'ckeditor_uploader',
+    'drf_yasg',
+    'django.contrib.staticfiles',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'jobportalapp.urls'

@@ -1,1 +1,7 @@
-django==6.0.3
+cloudinary==1.44.1,
+Django==6.0.3,
+django-ckeditor==6.7.3,
+django-debug-toolbar==6.3.0,
+djangorestframework==3.17.1,
+drf-yasg==1.21.15,
+mysqlclient==2.2.8,
