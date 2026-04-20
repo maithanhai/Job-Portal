@@ -62,9 +62,11 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'drf_yasg',
+    'rest_framework',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'oauth2_provider'
+    'oauth2_provider',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
