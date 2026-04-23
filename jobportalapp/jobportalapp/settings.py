@@ -30,14 +30,16 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "jobs.User"
 
+cloud_name = 'thanhai'
+
 import cloudinary.api
 cloudinary.config(
-    cloud_name='thanhai',
+    cloud_name=cloud_name,
     api_key='837549944776194',
     api_secret='h4FQ4oJTptyewpDhijZSxBR0NnY'
 )
 
-CKEDITOR_UPLOAD_PATH = 'images/'
+CKEDITOR_UPLOAD_PATH = 'images/ckeditors/'
 
 INTERNAL_IPS = [
 '127.0.0.1'
@@ -150,5 +152,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-ClientID='kqk57eFFQAdjH4oYTCERTamODXZYddd7hX1yaU8K'
+CLIENT_ID='kqk57eFFQAdjH4oYTCERTamODXZYddd7hX1yaU8K'
 CLIENT_SECRET='uDJK4xJs6xfnHFvN8vUWvSRHWkcjo1klUCEGUvPuXQ3WuN5CSYEExLbNd0b2a7sRHreSz2LRXCQHGgt6kVtte8bb4frwS94wdIM5c58O3OXrcrV98sc5b2BKEiyql5Ov'

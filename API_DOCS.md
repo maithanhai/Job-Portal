@@ -5,7 +5,6 @@
 |  1  | **Auth** | `/api/users/register/` | POST | Đăng ký tài khoản (Tự động tạo Profile) |   Đã làm   |
 |  2  | **User** | `/api/users/me/` | GET | Lấy thông tin tài khoản hiện tại |   Đã làm   |
 |  3  | **User** | `/api/users/me/` | PATCH | Cập nhật thông tin cá nhân/Công ty |   Đã làm   |
-|  4  | **User** | `/api/users/me/avatar/` | PATCH | Cập nhật ảnh đại diện (Cloudinary) |            |
 |  5  | **Master** | `/api/categories/` | GET | Lấy danh sách ngành nghề (Phân trang) |   Đã làm   |
 |  6  | **Master** | `/api/categories/{id}/skills/` | GET | Lấy Kỹ năng theo từng ngành cụ thể |            |
 |  7  | **Master** | `/api/skills/` | GET | Lấy toàn bộ danh sách kỹ năng hệ thống |            |

@@ -1,8 +1,6 @@
-from django.shortcuts import render
-from rest_framework import mixins, status
+from rest_framework import mixins, status, parsers
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from jobs.models import Category, User, Candidate, Employer
 from jobs.serializers import CategorySerializer, UserSerializer, SimpleUserSerializer
 from rest_framework import viewsets
@@ -14,12 +12,12 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser]
 
     def get_permissions(self):
         if self.action == 'register':
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
-
     @action(methods=['post'], url_path='register', detail=False)
     def register(self, request):
         serializer = UserSerializer(data=request.data)
@@ -39,10 +37,6 @@ class UserViewSet(viewsets.GenericViewSet):
             s.is_valid(raise_exception=True)
             s.save()
         return Response(SimpleUserSerializer(user).data, status=status.HTTP_200_OK)
-    @action(methods=['patch'],url_path='me/avatar', detail=False)
-    def change_avatar(self,request):
-        user = request.user
-
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.filter(is_active=True)
     serializer_class = CategorySerializer

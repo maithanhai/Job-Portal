@@ -1,3 +1,4 @@
+from jobportalapp.settings import cloud_name
 from jobs.models import Candidate, Employer, User, Category, Job
 from rest_framework import serializers
 
@@ -5,6 +6,15 @@ class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'avatar', 'full_name']
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        if instance.avatar:
+            avatar_url = instance.avatar.url
+            if not avatar_url.startswith('http'):
+                avatar_url = f"http://res.cloudinary.com/{cloud_name}{avatar_url}" #update duong dan avatar
+        instance.avatar = avatar_url
+        instance.save()
+        return instance
 
 class UserSerializer(SimpleUserSerializer):
     class Meta:
@@ -15,7 +25,6 @@ class UserSerializer(SimpleUserSerializer):
                 'write_only': True
             },
         }
-
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if instance.avatar:
