@@ -20,10 +20,10 @@ class MyAdminSite(AdminSite):
 
     def job_portal_stats(self, request):
         context = self.each_context(request)
-        application_total = Application.objects.filter(active=True).count()
-        job_total = Job.objects.filter(active=True).count()
-        employer_total = Employer.objects.filter(active=True, is_verified=True).count()
-        candidate_total = Candidate.objects.filter(active=True).count()
+        application_total = Application.objects.filter(is_active=True).count()
+        job_total = Job.objects.filter(is_active=True).count()
+        employer_total = Employer.objects.filter(is_active=True, is_verified=True).count()
+        candidate_total = Candidate.objects.filter(is_active=True).count()
         context.update({
             'stats': {
                 'application_total': application_total,

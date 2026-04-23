@@ -1,10 +1,32 @@
 from jobs.models import Candidate, Employer, User, Category, Job
 from rest_framework import serializers
 
-class UserSerializer(serializers.ModelSerializer):
+class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','email']
+        fields = ['id', 'email', 'avatar', 'full_name']
+
+class UserSerializer(SimpleUserSerializer):
+    class Meta:
+        model = SimpleUserSerializer.Meta.model
+        fields = SimpleUserSerializer.Meta.fields + ['username', 'password', 'role']
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+        }
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.avatar:
+            data['avatar'] = instance.avatar.url
+        return data
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(user.password)
+        user.save()
+        return user
 class CandidateSerializer(serializers.ModelSerializer):
     full_name=serializers.CharField(source='user.full_name',read_only=True)
     avatar=serializers.CharField(source='user.avatar',read_only=True)
