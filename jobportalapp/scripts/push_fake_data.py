@@ -93,17 +93,25 @@ def create_employers(count):
         try:
             with transaction.atomic():
                 username = fake.unique.user_name()
+
+                # --- SỬA LOGIC TÊN TẠI ĐÂY ---
+                # 1. Tạo tên người thật cho nhân sự HR
+                hr_full_name = fake.name()
+                # 2. Tạo tên doanh nghiệp riêng biệt
+                fake_company_name = fake.company()
+
                 user = User.objects.create_user(
                     username=username,
                     email=f"hr.{username}@company.vn",
                     password="Password123!",
-                    full_name=fake.company(),
+                    full_name=hr_full_name,  # Gán tên người thật vào User
                     role=User.EMPLOYER,
                     avatar="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg"
                 )
+
                 employer = Employer.objects.create(
                     user=user,
-                    company_name=user.full_name,
+                    company_name=fake_company_name,  # Gán tên doanh nghiệp vào Employer
                     location=fake.city(),
                     is_verified=True
                 )
@@ -121,22 +129,38 @@ def create_jobs(employers, categories, skills):
             category = random.choice(categories)
             relevant_skills = [s for s in skills if s.category == category]
 
+            # --- SỬA LOGIC LƯƠNG TẠI ĐÂY ---
+            # 1. Random xem công việc này có phải "Lương thỏa thuận" hay không
+            is_negotiable_value = random.choice([True, False])
+
+            # 2. Nếu là Thỏa thuận -> Xóa trắng mức lương. Nếu không -> Random số tiền
+            if is_negotiable_value:
+                min_sal = None
+                max_sal = None
+            else:
+                min_sal = random.randint(8, 15) * 1000000
+                max_sal = random.randint(16, 45) * 1000000
+            # -------------------------------
+
             job = Job.objects.create(
                 name=f"Tuyển {fake.job()} - {category.name}",
                 category=category,
                 employer=emp,
                 location=fake.address(),
                 description=f"<h3>Yêu cầu công việc</h3><p>{fake.paragraph(nb_sentences=5)}</p>",
-                salary_min=random.randint(8, 15) * 1000000,
-                salary_max=random.randint(16, 45) * 1000000,
-                is_negotiable=random.choice([True, False]),
+
+                # Truyền biến vừa tạo vào đây
+                salary_min=min_sal,
+                salary_max=max_sal,
+                is_negotiable=is_negotiable_value,
+
                 is_premium=random.choice([True, False, False]),
                 deadline=timezone.make_aware(fake.future_datetime(end_date="+60d"))
             )
+
             if relevant_skills:
                 num_skill = min(len(relevant_skills), random.randint(3, 5))
                 job.skill.add(*random.sample(relevant_skills, k=num_skill))
-
 
 def create_candidates(count, skills):
     """Tao ung vien va ho so ung tuyen."""

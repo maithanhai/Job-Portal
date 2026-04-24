@@ -1,5 +1,7 @@
+
+
 from jobportalapp.settings import cloud_name
-from jobs.models import Candidate, Employer, User, Category, Job
+from jobs.models import Candidate, Employer, User, Category, Job, Skill, Resume, Application, SavedJob
 from rest_framework import serializers
 
 class SimpleUserSerializer(serializers.ModelSerializer):
@@ -56,12 +58,36 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id','name','description']
 
-class JobSalarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Job
-        fields = ['id','name','location','description','salary_min','salary_max']
-
 class JobSerializer(serializers.ModelSerializer):
+    employer = EmployerSerializer(read_only=True)
     class Meta:
         model = Job
-        fields = ['id','name','location','description','is_negotiable']
+        fields = ['id','name',
+                  'category','location',
+                  'description','salary_min',
+                  'salary_max','is_negotiable',
+                  'employer','deadline']
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        category_data = CategorySerializer(instance.category).data
+        response['category'] = category_data
+        return response
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ['id','name']
+
+class ResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resume
+        fields = ['id','name','file_cv']
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['id','resume','candidate','cover_letter']
+
+class SavedJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavedJob
+        fields = ['id','candidate','job']
