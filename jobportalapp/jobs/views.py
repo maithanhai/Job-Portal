@@ -6,7 +6,7 @@ from django.utils import timezone
 from jobs.models import Category, User, Candidate, Employer, Skill, Job, Resume, Application, SavedJob
 from jobs.paginators import DefaultPagination
 from jobs.serializers import CategorySerializer, UserSerializer, SimpleUserSerializer, SkillSerializer, JobSerializer, \
-    ResumeSerializer, ApplicationSerializer, SavedJobSerializer
+    ResumeSerializer, ApplicationSerializer, SavedJobSerializer, ApplicationStatusUpdateSerializer
 from rest_framework import viewsets
 from rest_framework import permissions
 from . import perms
@@ -142,7 +142,6 @@ class ResumeViewSet(mixins.ListModelMixin,
 
 class ApplicationViewSet(mixins.ListModelMixin,mixins.CreateModelMixin,viewsets.GenericViewSet):
     queryset = Application.objects.filter(is_active=True)
-    serializer_class = ApplicationSerializer
     permission_classes = [perms.IsVerifiedCandidate,perms.IsVerifiedEmployer]
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -172,6 +171,21 @@ class ApplicationViewSet(mixins.ListModelMixin,mixins.CreateModelMixin,viewsets.
             return Application.objects.filter(is_active=True,job__employer__user=user)
 
         return Application.objects.none()
+    def get_serializer_class(self):
+        if self.action in ['status']:
+            return ApplicationStatusUpdateSerializer
+        return ApplicationSerializer
+    @action(methods=['patch'],detail=True,url_path='status')
+    def status(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+        if not hasattr(user,'employer') or instance.job.employer.user != user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        serializer = self.get_serializer(instance,data=request.data,partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class SavedJobViewSet(mixins.ListModelMixin,
                       mixins.CreateModelMixin,

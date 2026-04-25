@@ -86,7 +86,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ['id','resume','candidate','cover_letter']
-
+class ApplicationStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['status']
 class SavedJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedJob

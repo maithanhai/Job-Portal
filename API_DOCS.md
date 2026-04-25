@@ -21,6 +21,6 @@
 | 18  | **Action**  | `/api/saved-jobs/`               |    GET    | Xem danh sách việc làm đã lưu            |   Đã làm   |
 |19| **A**       | `/api/saved-jobs/`               |  DELETE   | Xóa việc làm đã lưu|   Đã làm   |
 | 19  | **Manage**  | `/api/applications/`             |    GET    | Quản lý danh sách đơn ứng tuyển          |   Đã làm   |
-| 20  | **Manage**  | `/api/applications/{id}/status/` |   PATCH   | Cập nhật trạng thái duyệt đơn            |            |
+| 20  | **Manage**  | `/api/applications/{id}/status/` |   PATCH   | Cập nhật trạng thái duyệt đơn            |   Đã làm   |
 | 21  | **Payment** | `/api/payments/`                 |   POST    | Tạo yêu cầu thanh toán tin Premium       |            |
 | 22  | **Payment** | `/api/payments/`                 |    GET    | Xem lịch sử giao dịch thanh toán         |            |
