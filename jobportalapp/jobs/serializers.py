@@ -58,6 +58,11 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id','name','description']
 
+class SimpleJobSerializer(serializers.ModelSerializer):
+    company_name = serializers.CharField(source='employer.company_name')
+    class Meta:
+        model = Job
+        fields = ['id', 'name', 'salary_min', 'salary_max', 'is_negotiable', 'company_name']
 class JobSerializer(serializers.ModelSerializer):
     employer = EmployerSerializer(read_only=True)
     class Meta:

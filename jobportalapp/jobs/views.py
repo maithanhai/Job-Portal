@@ -6,7 +6,7 @@ from django.utils import timezone
 from jobs.models import Category, User, Candidate, Employer, Skill, Job, Resume, Application, SavedJob
 from jobs.paginators import DefaultPagination
 from jobs.serializers import CategorySerializer, UserSerializer, SimpleUserSerializer, SkillSerializer, JobSerializer, \
-    ResumeSerializer, ApplicationSerializer, SavedJobSerializer, ApplicationStatusUpdateSerializer
+    ResumeSerializer, ApplicationSerializer, SavedJobSerializer, ApplicationStatusUpdateSerializer, SimpleJobSerializer
 from rest_framework import viewsets
 from rest_framework import permissions
 from . import perms
@@ -51,7 +51,11 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         category = self.get_object()
         skills = Skill.objects.filter(category=category)
         return Response(SkillSerializer(skills, many=True).data, status=status.HTTP_200_OK)
-
+    @action(methods=['get'],detail=True,url_path='jobs')
+    def get_jobs(self, request,pk=None):
+        category = self.get_object()
+        jobs = Job.objects.filter(category=category)
+        return Response(JobSerializer(jobs, many=True).data, status=status.HTTP_200_OK)
 class SkillViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Skill.objects.filter(is_active=True)
     serializer_class = SkillSerializer
@@ -64,12 +68,16 @@ class JobViewSet(mixins.ListModelMixin,
                  mixins.DestroyModelMixin,
                  viewsets.GenericViewSet):
     queryset = Job.objects.filter(is_active=True)
-    serializer_class = JobSerializer
+    serializer_class = SimpleJobSerializer
     pagination_class = DefaultPagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['id','salary_min']
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SimpleJobSerializer
+        return JobSerializer
     def get_permissions(self):
         if self.action in ['create','update','partial_update']:
             return [perms.IsVerifiedEmployer()]
@@ -77,14 +85,14 @@ class JobViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         queryset = super().get_queryset()
         location_kw = self.request.query_params.get('location')
-        category_kw = self.request.query_params.get('category')
+        category_kw = self.request.query_params.get('category_id')
         salary_min = self.request.query_params.get('salary_min')
         company_kw = self.request.query_params.get('company_name')
 
         if location_kw:
             queryset = queryset.filter(location__icontains=location_kw)
         if category_kw:
-            queryset = queryset.filter(category__name__icontains=category_kw)
+            queryset = queryset.filter(category__id=category_kw)
         if salary_min:
             queryset = queryset.filter(salary_min__gte = salary_min)
         if company_kw:
