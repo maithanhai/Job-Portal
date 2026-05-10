@@ -1,5 +1,5 @@
 import { View, Text} from "react-native";
-import style from "../../../styles/Style";
+import style from "../../../style/Styles";
 
 const NotificationTab = () => {
     return (

@@ -1,23 +1,21 @@
-import { useState } from "react"
+import { useContext } from "react";
+import { MyUserContext } from "../configs/Contexts"; // Nhớ check lại đường dẫn này
 import AuthStack from "./AuthStack";
 import CandidateTabs from "./CandidateTabs";
 import EmployerTabs from "./EmployerTabs";
 
-
 const RootNavigation = () => {
-    const [isLogin,setIsLogin] = useState(false);
-    const [userRole,setUserRole] = useState("CANDIDATE");
+    const [user] = useContext(MyUserContext);
 
-    if (!isLogin){
-        return <AuthStack />
+    if (user === null) {
+        return <AuthStack />;
     }
 
-    if (userRole === "CANDIDATE"){
-        return <CandidateTabs />
+    if (user.role === "EMPLOYER") {
+        return <EmployerTabs />;
     }
-
-    return <EmployerTabs />
-
+    
+    return <CandidateTabs />;
 }
 
 export default RootNavigation;

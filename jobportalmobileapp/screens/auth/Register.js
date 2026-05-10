@@ -1,51 +1,83 @@
+import React, { useState } from "react";
 import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  KeyboardAvoidingView, 
-  ScrollView, 
-  TouchableWithoutFeedback, 
-  Keyboard 
+  View, Text, TouchableOpacity, KeyboardAvoidingView, 
+  ScrollView, TouchableWithoutFeedback, Keyboard, Alert 
 } from "react-native";
-import Styles from "../../styles/Style";
-import { useState } from "react";
-import { SegmentedButtons } from "react-native-paper";
+import Styles from "./Styles"; 
+import { HelperText, SegmentedButtons } from "react-native-paper";
 import CustomInput from "../../components/common/CustomInput";
 import CustomButton from "../../components/common/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../../theme/Color";
+import Apis, { endpoints } from "../../configs/Apis";
 
 const Register = () => {
-  const [role, setRole] = useState("CANDIDATE");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); 
   const nav = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const [user, setUser] = useState({
+    "role": "CANDIDATE",
+    "full_name": "",
+    "email": "",
+    "username": "",
+    "password": "",
+    "confirm": "",
+    "company_name": "",
+    "address": ""      
+  });
+
+  const commonFields = [
+    { field: 'full_name', label: 'Họ và tên', icon: 'account-box' },
+    { field: 'email', label: 'Email', icon: 'email-outline', keyboardType: 'email-address' },
+    { field: 'username', label: 'Tên tài khoản', icon: 'account' },
+    { field: 'password', label: 'Mật khẩu', icon: 'lock', isPassword: true },
+    { field: 'confirm', label: 'Xác nhận mật khẩu', icon: 'lock-check', isPassword: true },
+  ];
+
+  const employerFields = [
+    { field: 'company_name', label: 'Tên công ty', icon: 'office-building' },
+    { field: 'address', label: 'Địa chỉ', icon: 'map-marker' },
+  ];
+
+  const change = (field, value) => {
+    setUser(current => ({ ...current, [field]: value }));
+  };
+
+  const register = async () => {
+    if (user.password !== user.confirm) {
+      setErr("Mật khẩu xác nhận không đúng!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Lưu ý: Nếu Hải có upload ảnh, chỗ này phải dùng FormData
+      // Hiện tại thầy làm kiểu JSON cơ bản trước cho Hải
+      let res = await Apis.post(endpoints['register'], user);
+      
+      if (res.status === 201) {
+        Alert.alert("Thành công", "Đăng ký tài khoản thành công!");
+        nav.navigate("Login");
+      }
+    } catch (ex) {
+      console.error(ex);
+      setErr("Có lỗi xảy ra khi đăng ký, vui lòng thử lại!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <KeyboardAvoidingView
-      behavior={"height"}
-      style={{ flex: 1, backgroundColor: "white" }} 
-    >
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, backgroundColor: "white" }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView 
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-              marginTop: 40, 
-              color: 'black'
-            }}
-          >
-            Đăng ký tài khoản
-          </Text>
+        <ScrollView contentContainerStyle={Styles.container} showsVerticalScrollIndicator={false}>
+          
+          <Text style={[Styles.title]}>Đăng ký tài khoản</Text>
 
           <SegmentedButtons
-            value={role}
-            onValueChange={setRole}
+            value={user.role}
+            onValueChange={v => change("role", v)}
             buttons={[
               { value: "CANDIDATE", label: "Ứng viên", icon: "account" },
               { value: "EMPLOYER", label: "Tuyển dụng", icon: "office-building" },
@@ -54,67 +86,59 @@ const Register = () => {
           />
 
           <View style={{ paddingHorizontal: 20 }}>
-            <CustomInput label="Họ và tên" icon="account-box" />
-            <CustomInput 
-              label="Email" 
-              icon="email-outline" 
-              keyboardType="email-address" 
-              autoCapitalize="none" 
-            />
+            {err ? <HelperText type="error">{err}</HelperText> : null}
 
-            {role === "EMPLOYER" && (
-              <View>
-                <CustomInput label="Tên công ty" icon="office-building" />
-                <CustomInput label="Địa chỉ" icon="map-marker" />
-              </View>
-            )}
+            {commonFields.map(f => {
+              if (f.field === 'username' && user.role === 'EMPLOYER') {
+                return (
+                  <View key="employer-section">
+                    {employerFields.map(ef => (
+                      <CustomInput
+                        key={ef.field}
+                        label={ef.label}
+                        icon={ef.icon}
+                        value={user[ef.field]}
+                        onChangeText={t => change(ef.field, t)}
+                      />
+                    ))}
+                    <CustomInput
+                      label={f.label}
+                      icon={f.icon}
+                      value={user[f.field]}
+                      onChangeText={t => change(f.field, t)}
+                    />
+                  </View>
+                );
+              }
 
-            <CustomInput label="Tên tài khoản" icon="account" autoCapitalize="none" />
-            <CustomInput 
-              label="Mật khẩu" 
-              icon="lock" 
-              isPassword={true} 
-              value={password}
-              onChangeText={setPassword}
-            />
-            <CustomInput 
-              label="Nhập lại mật khẩu" 
-              icon="lock-check" 
-              isPassword={true} 
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
+              return (
+                <CustomInput
+                  key={f.field}
+                  label={f.label}
+                  icon={f.icon}
+                  value={user[f.field]}
+                  onChangeText={t => change(f.field, t)}
+                  isPassword={f.isPassword}
+                  keyboardType={f.keyboardType}
+                />
+              );
+            })}
           </View>
 
           <CustomButton
             title="HOÀN TẤT ĐĂNG KÝ"
-            onPress={() => nav.navigate("Login")}
+            onPress={register}
+            loading={loading}
             style={{ margin: 20 }}
           />
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: 20,
-            }}
-          >
-            <Text style={{ color: Colors.gray, fontSize: 15 }}>
-              Bạn đã có tài khoản?{" "}
-            </Text>
+          <View style={Styles.rowCenter}>
+            <Text style={{ color: Colors.gray }}>Bạn đã có tài khoản? </Text>
             <TouchableOpacity onPress={() => nav.navigate("Login")}>
-              <Text
-                style={{
-                  color: Colors.primary,
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                Đăng nhập ngay
-              </Text>
+              <Text style={Styles.linkText}>Đăng nhập ngay</Text>
             </TouchableOpacity>
           </View>
+
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
