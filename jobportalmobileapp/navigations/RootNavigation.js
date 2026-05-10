@@ -5,8 +5,8 @@ import EmployerTabs from "./EmployerTabs";
 
 
 const RootNavigation = () => {
-    const [isLogin,setIsLogin] = useState(true);
-    const [userRole,setUserRole] = useState("EMPLOYER");
+    const [isLogin,setIsLogin] = useState(false);
+    const [userRole,setUserRole] = useState("CANDIDATE");
 
     if (!isLogin){
         return <AuthStack />

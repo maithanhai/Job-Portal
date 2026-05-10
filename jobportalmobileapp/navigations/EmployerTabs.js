@@ -14,8 +14,8 @@ const EmployerTabs = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.tabActive,
-        tabBarInactiveTintColor: Colors.tabInactive,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.gray,
         tabBarLabelStyle:{
             fontSize: 12,
             fontWeight: "bold",

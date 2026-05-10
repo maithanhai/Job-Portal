@@ -13,12 +13,12 @@ const CandidateTabs = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.tabActive,
-        tabBarInactiveTintColor: Colors.tabInactive,
-        tabBarLabelStyle:{
-            fontSize: 12,
-            fontWeight: "bold",
-        }
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.gray,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "bold",
+        },
       }}
       initialRouteName="Home"
     >
@@ -26,8 +26,12 @@ const CandidateTabs = () => {
         name="Home"
         component={HomeTab}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon source={focused ? "home" : "home-outline"} size={30} />
+          tabBarIcon: ({ focused, color }) => (
+            <Icon
+              source={focused ? "home" : "home-outline"}
+              size={30}
+              color={color}
+            />
           ),
         }}
       />
@@ -35,10 +39,11 @@ const CandidateTabs = () => {
         name="My Jobs"
         component={MyJobTab}
         options={{
-          tabBarIcon: ({ focused }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Icon
               source={focused ? "briefcase" : "briefcase-outline"}
               size={30}
+              color={color}
             />
           ),
         }}
@@ -47,8 +52,12 @@ const CandidateTabs = () => {
         name="Notifications"
         component={NotificationTab}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon source={focused ? "bell" : "bell-outline"} size={30} />
+          tabBarIcon: ({ focused, color }) => (
+            <Icon
+              source={focused ? "bell" : "bell-outline"}
+              size={30}
+              color={color}
+            />
           ),
         }}
       />
@@ -56,8 +65,12 @@ const CandidateTabs = () => {
         name="Account"
         component={AccountTab}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon source={focused ? "account" : "account-outline"} size={30} />
+          tabBarIcon: ({ focused, color }) => (
+            <Icon
+              source={focused ? "account" : "account-outline"}
+              size={30}
+              color={color}
+            />
           ),
         }}
       />
