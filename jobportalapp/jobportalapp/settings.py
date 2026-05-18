@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$!o!vsj621l!qlrl79)-7ugfk7sdch1y%5x&pi3ltg*$fsrb+2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.5']
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "jobs.User"
 
@@ -152,5 +152,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-CLIENT_ID='kqk57eFFQAdjH4oYTCERTamODXZYddd7hX1yaU8K'
-CLIENT_SECRET='uDJK4xJs6xfnHFvN8vUWvSRHWkcjo1klUCEGUvPuXQ3WuN5CSYEExLbNd0b2a7sRHreSz2LRXCQHGgt6kVtte8bb4frwS94wdIM5c58O3OXrcrV98sc5b2BKEiyql5Ov'
+CLIENT_ID='oK57ivAKGWDmJDE4Qti7nSCAsnmcBDLBl4M5rvwr'
+CLIENT_SECRET='3MjKDP3sOY9qX6xDdMR6ninUz7W7mtBDg0liqkuEs6kAe7ukOSZ9WBuuBrX86RgUS0JCLWBaLa0LiCSYJDwjS5M0OIVGQGdUXBeVRg7gg2GJDA2lR5cZoGoRvFYOhYNL'

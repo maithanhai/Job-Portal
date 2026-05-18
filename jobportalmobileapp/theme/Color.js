@@ -1,7 +1,6 @@
 
-
 const Colors = {
-    primary: "#10B981", // Màu xanh lơ chủ đạo
+    primary: "#10B981",
     white: "#FFFFFF",
     lightGray: "#D1D5DB",
     gray: "#6B7280",

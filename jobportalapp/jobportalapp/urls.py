@@ -42,5 +42,5 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('o/', include('oauth2_provider.urls',
     namespace='oauth2_provider')),
-    path('api/',include('jobs.urls')),
+    path('',include('jobs.urls')),
 ]

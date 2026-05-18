@@ -3,7 +3,7 @@ from django.db import models
 from cloudinary.models import CloudinaryField
 from ckeditor.fields import RichTextField
 
-class User(AbstractUser): #Bang User
+class User(AbstractUser): #user
     CANDIDATE = 'CANDIDATE'
     EMPLOYER = 'EMPLOYER'
     ADMIN = 'ADMIN'
@@ -20,11 +20,10 @@ class User(AbstractUser): #Bang User
     )
     username = models.CharField(max_length=50,unique=True)
     email = models.EmailField(unique=True,null=False,blank=False)
-    full_name = models.CharField(max_length=100,null=False)
     avatar = CloudinaryField('avatar',null=False,blank=False)
     phone_number = models.CharField(max_length=10, blank=True)
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email','full_name']
+    REQUIRED_FIELDS = ['email']
     def __str__(self):
         return self.email
     def save(self, *args, **kwargs):
@@ -46,7 +45,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class Candidate(BaseModel): #Bang ung vien
+class Candidate(BaseModel): #ung vien
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     skills = models.ManyToManyField('Skill',blank=True)
 
@@ -58,13 +57,13 @@ class Employer(BaseModel): #Bang nha tuyen dung
     def __str__(self):
         return self.company_name
 
-class Category(BaseModel): # Bang danh muc Job
+class Category(BaseModel): # danh muc
     name = models.CharField(max_length=100)
     description = models.TextField()
     def __str__(self):
         return self.name
 
-class Job(BaseModel): #Bang thong tin Job cua nha tuyen dung
+class Job(BaseModel): #Bang Job
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     employer = models.ForeignKey(Employer, on_delete=models.PROTECT,related_name='jobs')

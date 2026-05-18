@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import style from "../../../style/Styles";
 
-const AccountTab = () => {
+const CandidatesTab = () => {
     return (
         <View style={style.container}>
-            <Text style={style.subject}>Account Tab</Text>
+            <Text style={style.subject}>Candidate Tab</Text>
         </View>
     );
 };
 
-export default AccountTab;
+export default CandidatesTab;

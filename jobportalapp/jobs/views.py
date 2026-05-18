@@ -34,7 +34,7 @@ class UserViewSet(viewsets.GenericViewSet):
             Employer.objects.create(user=user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    @action(methods=['get', 'patch'], url_path='me', detail=False)
+    @action(methods=['get', 'patch'], url_path='current-user', detail=False)
     def current_user(self, request):
         user = request.user
         if request.method == 'PATCH':
@@ -42,6 +42,7 @@ class UserViewSet(viewsets.GenericViewSet):
             s.is_valid(raise_exception=True)
             s.save()
         return Response(SimpleUserSerializer(user).data, status=status.HTTP_200_OK)
+
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.filter(is_active=True)
     serializer_class = CategorySerializer

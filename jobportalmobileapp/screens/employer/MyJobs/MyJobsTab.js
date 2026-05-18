@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import style from "../../../style/Styles";
 
-const NotificationTab = () => {
+const MyJobsTab = () => {
     return (
         <View style={style.container}>
-            <Text style={style.subject}>Notification Tab</Text>
+            <Text style={style.subject} >My Jobs Tab</Text>
         </View>
     );
 };
 
-export default NotificationTab;
+export default MyJobsTab;

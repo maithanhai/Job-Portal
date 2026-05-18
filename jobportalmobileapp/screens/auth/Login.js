@@ -46,12 +46,11 @@ const Login = () => {
             setErr("");
             setLoading(true);
             try {
-                // 1. Dùng FormData thay vì JSON cho OAuth2
                 const formData = new FormData();
                 formData.append('username', user.username);
                 formData.append('password', user.password);
-                formData.append('client_id', 'kqk57eFFQAdjH4oYTCERTamODXZYddd7hX1yaU8K');
-                formData.append('client_secret', 'uDJK4xJs6xfnHFvN8vUWvSRHWkcjo1klUCEGUvPuXQ3WuN5CSYEExLbNd0b2a7sRHreSz2LRXCQHGgt6kVtte8bb4frwS94wdIM5c58O3OXrcrV98sc5b2BKEiyql5Ov');
+                formData.append('client_id', 'oK57ivAKGWDmJDE4Qti7nSCAsnmcBDLBl4M5rvwr');
+                formData.append('client_secret', '3MjKDP3sOY9qX6xDdMR6ninUz7W7mtBDg0liqkuEs6kAe7ukOSZ9WBuuBrX86RgUS0JCLWBaLa0LiCSYJDwjS5M0OIVGQGdUXBeVRg7gg2GJDA2lR5cZoGoRvFYOhYNL');
                 formData.append('grant_type', 'password');
 
                 let res = await Apis.post(endpoints['login'], formData, {
@@ -60,18 +59,19 @@ const Login = () => {
                     }
                 });
 
-                // 2. Lưu token vào máy
                 await AsyncStorage.setItem('token', res.data.access_token);
-                
-                // 3. Lấy thông tin user (nhớ check endpoint này trong Apis.js phải có /api/)
+        
                 let u = await authApis(res.data.access_token).get(endpoints['current-user']);
                 
-                // 4. Cất vào kho Context
+                // Cap nhat user vao Context
                 dispatch({
                     "type": "LOGIN",
                     "payload": u.data
                 });
 
+                await AsyncStorage.setItem('user', JSON.stringify(u.data));
+
+                
                 console.info("Đăng nhập thành công!");
 
             } catch (ex) {
@@ -98,7 +98,7 @@ const Login = () => {
                         value={user[i.field] || ""}
                         onChangeText={t => change(i.field, t)}
                         isPassword={i.isPassword}
-                        autoCapitalize="none" // Tránh tự viết hoa chữ đầu
+                        autoCapitalize="none"
                     />
                 ))}
 
