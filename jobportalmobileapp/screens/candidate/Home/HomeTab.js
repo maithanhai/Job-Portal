@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import Apis, { authApis, endpoints } from "../../../configs/Apis";
 import { MyUserContext } from "../../../configs/Contexts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Styles from "../../../style/Styles";
+import GlobalStyles from "../../../style/Styles";
+import ScreenStyles from "./Styles";
 import CategoryHeader from "../../../components/candidate/CategoryHeader"; 
 import JobCard from "../../../components/candidate/JobCard"; 
 import Colors from "../../../theme/Color";
@@ -117,14 +118,14 @@ const HomeTab = () => {
     };
 
     return (
-        <View style={[Styles.container, Styles.padding]}>
+        <View style={[GlobalStyles.container, GlobalStyles.padding]}>
             <CategoryHeader cateId={cateId} setCateId={setCateId} />
             
             <Searchbar 
                 value={q} 
                 onChangeText={setQ} 
                 placeholder="Tìm công việc, kỹ năng..." 
-                style={{ marginBottom: 15, backgroundColor: "#f0f0f0" }}
+                style={ScreenStyles.searchbar}
             />
 
             <FlatList 
@@ -143,11 +144,11 @@ const HomeTab = () => {
 
                 ListEmptyComponent={
                     !loading && (
-                        <View style={{ alignItems: "center", marginTop: 50, paddingHorizontal: 20 }}>
-                            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#555" }}>
+                        <View style={ScreenStyles.emptyContainer}>
+                            <Text style={ScreenStyles.emptyText}>
                                 Không tìm thấy công việc nào.
                             </Text>
-                            <Text style={{ color: "gray", fontSize: 13, marginTop: 5, textAlign: "center" }}>
+                            <Text style={ScreenStyles.emptySubText}>
                                 Thử thay đổi từ khóa tìm kiếm hoặc chọn một ngành nghề khác xem sao nhé!
                             </Text>
                         </View>

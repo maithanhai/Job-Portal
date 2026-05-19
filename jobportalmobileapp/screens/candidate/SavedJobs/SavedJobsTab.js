@@ -4,96 +4,85 @@ import { Text } from "react-native-paper";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { authApis, endpoints } from "../../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Styles from "../../../style/Styles";
+import GlobalStyles from "../../../style/Styles";
+import ScreenStyles from "./Styles";
 import JobCard from "../../../components/candidate/JobCard";
 import Colors from "../../../theme/Color";
 
 const SavedJobsTab = () => {
     const [savedJobs, setSavedJobs] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    
+    // Thêm các state phục vụ phân trang
     const [page, setPage] = useState(1);
+    const [nextUrl, setNextUrl] = useState(null);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     const nav = useNavigation();
     const isFocused = useIsFocused();
 
-    // Giữ nguyên 2 biến giống hệt HomeTab để kiểm soát chặn 404
-    const [hasNextPage, setHasNextPage] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
-
-    // 1. Hàm tải danh sách (Y chang logic HomeTab)
-    const loadSavedJobs = async (targetPage, isLoadMore = false) => {
+    const loadSavedJobs = async (currentPage, isLoadMore = false) => {
         try {
-            if (isLoadMore) setLoadingMore(true);
-            else setLoading(true);
-
             let token = await AsyncStorage.getItem("token");
-            if (!token) return;
-
-            // Xử lý chuỗi endpoint sạch để tránh lỗi mất param page
-            let baseEndpoint = endpoints['saved-jobs'];
-            if (baseEndpoint.endsWith('/')) {
-                baseEndpoint = baseEndpoint.slice(0, -1);
+            if (!token) {
+                setLoading(false);
+                setRefreshing(false);
+                setLoadingMore(false);
+                return;
             }
-            let url = `${baseEndpoint}?page=${targetPage}`;
 
-            let res = await authApis(token).get(url);
+            // Gắn thêm params page vào endpoint. 
+            // Nếu endpoint đã có sẵn query dạng ?abc=xyz thì dùng &page=, ngược lại dùng ?page=
+            const urlSeparator = endpoints['saved-jobs'].includes('?') ? '&' : '?';
+            const requestUrl = `${endpoints['saved-jobs']}${urlSeparator}page=${currentPage}`;
+
+            let res = await authApis(token).get(requestUrl);
             
-            setHasNextPage(res.data.next !== null);
+            // Nhận diện cấu trúc trả về: Có phân trang (res.data.results) hoặc Không phân trang (res.data)
+            const hasPagination = res.data.results !== undefined;
+            const newData = hasPagination ? res.data.results : res.data;
+            
+            setNextUrl(hasPagination ? res.data.next : null);
 
-            if (targetPage === 1)
-                setSavedJobs(res.data.results);
-            else
-                setSavedJobs(prev => [...prev, ...res.data.results]);
-                
+            if (isLoadMore) {
+                // Nếu là load more thì nối mảng dữ liệu mới vào mảng cũ
+                setSavedJobs(prev => [...prev, ...newData]);
+            } else {
+                // Nếu là load lần đầu hoặc refresh thì đè mảng mới luôn
+                setSavedJobs(newData);
+            }
         } catch (ex) {
             console.error("Lỗi tải danh sách công việc đã lưu:", ex);
-            if (ex.response?.status === 404) {
-                setHasNextPage(false);
-            }
         } finally {
             setLoading(false);
+            setRefreshing(false);
             setLoadingMore(false);
         }
     };
 
-    // 2. Kéo xuống để làm mới (Pull-to-refresh)
-    const onRefresh = async () => {
-        setRefreshing(true);
-        setPage(1); 
-        setHasNextPage(true);
-        try {
-            let token = await AsyncStorage.getItem("token");
-            let baseEndpoint = endpoints['saved-jobs'].endsWith('/') ? endpoints['saved-jobs'].slice(0, -1) : endpoints['saved-jobs'];
-            let res = await authApis(token).get(`${baseEndpoint}?page=1`);
-            
-            setSavedJobs(res.data.results);
-            setHasNextPage(res.data.next !== null);
-        } catch (ex) {
-            console.error("Lỗi khi refresh:", ex);
-        } finally {
-            setRefreshing(false);
-        }
-    };
-
-    // 3. Gọi API khi page thay đổi hoặc khi tab được focus vào
-    useEffect(() => {
-        if (isFocused) {
-            loadSavedJobs(page, page > 1);
-        }
-    }, [page, isFocused]);
-
-    // 4. Reset khi đổi trạng thái màn hình (đảm bảo luôn vào trang 1)
+    // Tự động reload trang đầu tiên khi user tab vào màn hình này
     useEffect(() => {
         if (isFocused) {
             setPage(1);
-            setHasNextPage(true);
+            loadSavedJobs(1, false);
         }
     }, [isFocused]);
 
-    // 5. Xử lý khi cuộn đến cuối danh sách (Load more)
-    const loadMore = () => {
-        if (hasNextPage && !loading && !loadingMore) {
-            setPage(prev => prev + 1);
+    // Hàm xử lý kéo lên làm mới (Pull to Refresh)
+    const onRefresh = () => {
+        setRefreshing(true);
+        setPage(1);
+        loadSavedJobs(1, false);
+    };
+
+    // Hàm xử lý khi cuộn đến đáy trang (Infinite Scroll)
+    const handleLoadMore = () => {
+        if (nextUrl && !loadingMore && !loading) {
+            setLoadingMore(true);
+            const nextPage = page + 1;
+            setPage(nextPage);
+            loadSavedJobs(nextPage, true);
         }
     };
 
@@ -111,35 +100,48 @@ const SavedJobsTab = () => {
         }
     };
 
+    // Hiển thị vòng xoay loading nhỏ ở dưới đáy danh sách khi đang load trang tiếp theo
+    const renderFooter = () => {
+        if (!loadingMore) return null;
+        return (
+            <View style={{ paddingVertical: 20 }}>
+                <ActivityIndicator size="small" color={Colors.primary} />
+            </View>
+        );
+    };
+
+    if (loading && page === 1) {
+        return (
+            <View style={[GlobalStyles.container, ScreenStyles.centered]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
+
     return (
-        <View style={[Styles.container, Styles.padding, { backgroundColor: "#f8f9fa" }]}>
+        <View style={[GlobalStyles.container, GlobalStyles.padding, { backgroundColor: "#f8f9fa" }]}>
             <FlatList
-                onEndReached={loadMore}
-                onEndReachedThreshold={0.2}
                 data={savedJobs}
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator={false}
-                ListFooterComponent={(loading || loadingMore) && <ActivityIndicator color={Colors.primary} />}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Colors.primary]} />
                 }
+                // Các thuộc tính kích hoạt phân trang khi cuộn đáy
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.2} // Còn cách đáy 20% chiều cao màn hình thì kích hoạt load tiếp
+                ListFooterComponent={renderFooter}
                 ListEmptyComponent={
-                    !loading && (
-                        <View style={{ alignItems: "center", marginTop: 80, paddingHorizontal: 20 }}>
-                            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#555" }}>
-                                Bạn chưa lưu công việc nào.
-                            </Text>
-                            <Text style={{ color: "gray", fontSize: 13, marginTop: 5 }}>
-                                Bấm thả tim ở trang chủ để lưu lại các công việc yêu thích.
-                            </Text>
-                        </View>
-                    )
+                    <View style={ScreenStyles.emptyContainer}>
+                        <Text style={ScreenStyles.emptyText}>Bạn chưa lưu công việc nào.</Text>
+                        <Text style={ScreenStyles.emptySubText}>
+                            Bấm thả tim ở trang chủ để lưu lại các công việc yêu thích.
+                        </Text>
+                    </View>
                 }
                 renderItem={({ item }) => {
-                    const embeddedJob = {
-                        ...item.job_details,
-                        is_saved: true 
-                    };
+                    // job_details đã có is_saved: true từ backend, không cần thêm lại
+                    const embeddedJob = item.job_details;
 
                     return (
                         <JobCard

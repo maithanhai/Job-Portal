@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import LogoutButton from "../../../components/common/LogoutButton";
 import ProfileHeader from "../../../components/common/ProfileHeader";
 import SettingItem from "../../../components/common/SettingItem";
-import styles from "../../../style/Styles";
+import GlobalStyles from "../../../style/Styles";
+import ScreenStyles from "./Styles";
 
 const CandidateAccountTab = () => {
     const [user] = useContext(MyUserContext);
@@ -13,19 +14,19 @@ const CandidateAccountTab = () => {
 
     return (
         <ScrollView
-            contentContainerStyle={styles.scrollContainer}
+            contentContainerStyle={GlobalStyles.scrollContainer}
             showsVerticalScrollIndicator={false}
-            style={styles.container}
+            style={GlobalStyles.container}
         >
-            <View style={styles.greenBackground} />
+            <View style={ScreenStyles.greenBackground} />
 
             <ProfileHeader 
                 user={user} 
                 onPress={() => nav.navigate("UserDetail")} 
             />
 
-            <View style={styles.body}>
-                <View style={styles.menuGroup}>
+            <View style={ScreenStyles.body}>
+                <View style={GlobalStyles.menuGroup}>
                     <SettingItem 
                         title="Hồ sơ của tôi" 
                         icon="file-account-outline" 
@@ -46,9 +47,9 @@ const CandidateAccountTab = () => {
                 </View>
             </View>
 
-            <View style={styles.spacer} />
+            <View style={GlobalStyles.spacer} />
 
-            <View style={styles.logoutBox}>
+            <View style={ScreenStyles.logoutBox}>
                 <LogoutButton />
             </View>
         </ScrollView>

@@ -17,6 +17,32 @@ const JobDetail = ({ route }) => {
     const [isApplied, setIsApplied] = useState(false); 
     const { width } = useWindowDimensions();
 
+    // Hàm format lương: 1000000 → "1tr", 1500000 → "1.5tr"
+    const formatSalary = (salary) => {
+        if (!salary) return "";
+        const millions = salary / 1000000;
+        if (millions % 1 === 0) {
+            return `${millions}tr`;
+        } else {
+            return `${millions.toFixed(1)}tr`;
+        }
+    };
+
+    // Format hiển thị lương
+    const getSalaryText = () => {
+        if (!job) return "Chưa cập nhật";
+        
+        if (job.is_negotiable) {
+            return "Thỏa thuận";
+        }
+        if (job.salary_min && job.salary_max) {
+            return `Lương từ ${formatSalary(job.salary_min)} - ${formatSalary(job.salary_max)}`;
+        } else if (job.salary_min) {
+            return `Lương từ ${formatSalary(job.salary_min)}`;
+        }
+        return "Chưa cập nhật";
+    };
+
     const loadJobDetails = async () => {
         try {
             setLoading(true);
@@ -75,7 +101,7 @@ const JobDetail = ({ route }) => {
                     />
                     <Card.Content>
                         <Text variant="titleMedium" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: 10 }}>
-                            Mức lương: {job.is_negotiable ? "Thỏa thuận" : `${job.salary_min} - ${job.salary_max} VNĐ`}
+                            {getSalaryText()}
                         </Text>
                         
                         <View style={{ flexDirection: "row", marginBottom: 5 }}>

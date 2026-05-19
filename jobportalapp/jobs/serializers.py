@@ -109,10 +109,20 @@ class SimpleJobSerializer(serializers.ModelSerializer):
     company_avatar = serializers.ImageField(source='employer.user.avatar', read_only=True)
     # ĐÃ THÊM: Hứng dữ liệu flag check tim từ annotate của queryset bên Viewset
     is_saved = serializers.BooleanField(read_only=True, default=False)
+    # ĐÃ THÊM: Flag check đã ứng tuyển để hiển thị consistent giữa list và detail
+    is_applied = serializers.BooleanField(read_only=True, default=False)
 
     class Meta:
         model = Job
-        fields = ['id', 'name', 'salary_min', 'salary_max', 'is_negotiable', 'company_name', 'company_avatar', 'is_saved', 'updated_at']
+        fields = ['id', 'name', 'salary_min', 'salary_max', 'is_negotiable', 'company_name', 'company_avatar',
+                  'is_saved', 'is_applied', 'updated_at','location']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Handle avatar URL từ Cloudinary
+        if instance.employer.user.avatar:
+            data['company_avatar'] = instance.employer.user.avatar.url
+        return data
 
 
 class JobSerializer(serializers.ModelSerializer):
@@ -138,10 +148,12 @@ class JobSerializer(serializers.ModelSerializer):
 class ApplicationSerializer(serializers.ModelSerializer):
     # ĐÃ SỬA: Xóa bỏ trường 'resume', thay thế bằng 'file_cv' lấy trực tiếp file upload từ local máy
     file_cv = serializers.FileField(required=True)
+    # ĐÃ THÊM: Đổ full thông tin Job để candidate thấy mình ứng tuyển vị trí nào
+    job_details = SimpleJobSerializer(source='job', read_only=True)
 
     class Meta:
         model = Application
-        fields = ['id', 'candidate', 'job', 'file_cv', 'cover_letter', 'status', 'created_at']
+        fields = ['id', 'candidate', 'job', 'job_details', 'file_cv', 'cover_letter', 'status', 'created_at']
         read_only_fields = ['candidate', 'status']
 
     def to_representation(self, instance):
