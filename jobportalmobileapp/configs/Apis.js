@@ -16,9 +16,6 @@ export const endpoints = {
     //Applications
     'applications': '/applications/', // Candidate xem danh sách đã nộp (GET) hoặc Nộp đơn mới (POST)
     'application-status': (id) => `/applications/${id}/status/`, // Employer duyệt/từ chối hồ sơ (PATCH)
-    //Resume
-    'resumes': '/resumes/', // Xem danh sách CV (GET), Tải CV lên (POST)
-    'resume-delete': (id) => `/resumes/${id}/`, // Xóa CV (DELETE)
 
     //Saved jobs
     'saved-jobs': '/saved-jobs/', // Xem danh sách việc đã lưu (GET), Lưu việc (POST)

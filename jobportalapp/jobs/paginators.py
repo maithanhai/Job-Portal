@@ -1,4 +1,4 @@
 from rest_framework import pagination
 
 class DefaultPagination(pagination.PageNumberPagination):
-    page_size = 20
+    page_size = 8

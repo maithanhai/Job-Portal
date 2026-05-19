@@ -49,8 +49,8 @@ const Login = () => {
                 const formData = new FormData();
                 formData.append('username', user.username);
                 formData.append('password', user.password);
-                formData.append('client_id', 'oK57ivAKGWDmJDE4Qti7nSCAsnmcBDLBl4M5rvwr');
-                formData.append('client_secret', '3MjKDP3sOY9qX6xDdMR6ninUz7W7mtBDg0liqkuEs6kAe7ukOSZ9WBuuBrX86RgUS0JCLWBaLa0LiCSYJDwjS5M0OIVGQGdUXBeVRg7gg2GJDA2lR5cZoGoRvFYOhYNL');
+                formData.append('client_id', 'YHw5vV0PavCuqodtdVJfGEPM0ePdgDMBozhrYaId');
+                formData.append('client_secret', 'UrFOG7zlLkhCS8sgiK0M8tGbVeSVzRjc943CJBCwJqTfcPfUJUBVAXry7T3TKIfFaEyc26uT3K1nw7LWVMdH130GzQ4haggJRw41piKIXgsmpHxm4xlSuznnF9pk2wJf');
                 formData.append('grant_type', 'password');
 
                 let res = await Apis.post(endpoints['login'], formData, {
@@ -63,7 +63,7 @@ const Login = () => {
         
                 let u = await authApis(res.data.access_token).get(endpoints['current-user']);
                 
-                // Cap nhat user vao Context
+                // Cap nhat user vao
                 dispatch({
                     "type": "LOGIN",
                     "payload": u.data
