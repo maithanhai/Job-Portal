@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import Apis, { endpoints } from "../../configs/Apis";
 import { Chip } from "react-native-paper";
-import styles from "../../style/Styles";
+import Styles from "../../style/Styles";
 import Colors from "../../theme/Color";
 
 const CategoryHeader = ({ cateId, setCateId }) => {
@@ -24,7 +24,7 @@ const CategoryHeader = ({ cateId, setCateId }) => {
     return (
         <View style={{ marginBottom: 15 }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <TouchableOpacity onPress={() => setCateId(null)} style={styles.margin}>
+                <TouchableOpacity onPress={() => setCateId(null)} style={Styles.margin}>
                     <Chip 
                         mode={cateId === null ? "flat" : "outlined"} 
                         icon="label"
@@ -36,7 +36,7 @@ const CategoryHeader = ({ cateId, setCateId }) => {
                 </TouchableOpacity>
 
                 {categories.map(c => (
-                    <TouchableOpacity onPress={() => setCateId(c.id)} style={styles.margin} key={`c${c.id}`}>
+                    <TouchableOpacity onPress={() => setCateId(c.id)} style={Styles.margin} key={`c${c.id}`}>
                         <Chip 
                             mode={cateId === c.id ? "flat" : "outlined"} 
                             icon="label"

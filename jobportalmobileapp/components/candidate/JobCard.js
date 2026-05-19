@@ -1,14 +1,39 @@
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Card, Text, IconButton, Avatar } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/vi';
 import Colors from '../../theme/Color';
+import { JobCardStyles } from './Styles';
 
 const JobCard = ({ item, next, onToggleSave }) => {
+    // Hàm format lương: 1000000 → "1tr", 1500000 → "1.5tr"
+    const formatSalary = (salary) => {
+        if (!salary) return "";
+        const millions = salary / 1000000;
+        if (millions % 1 === 0) {
+            return `${millions}tr`;
+        } else {
+            return `${millions.toFixed(1)}tr`;
+        }
+    };
+
+    // Format hiển thị lương
+    const getSalaryText = () => {
+        if (item.is_negotiable) {
+            return "Thỏa thuận";
+        }
+        if (item.salary_min && item.salary_max) {
+            return `Lương từ ${formatSalary(item.salary_min)} - ${formatSalary(item.salary_max)}`;
+        } else if (item.salary_min) {
+            return `Lương từ ${formatSalary(item.salary_min)}`;
+        }
+        return "Chưa cập nhật";
+    };
+
     return (
         <TouchableOpacity onPress={next} activeOpacity={0.8}>
-            <Card style={localStyles.card}>
+            <Card style={JobCardStyles.card}>
                 <Card.Title
                     title={item.name}
                     titleStyle={{ fontWeight: 'bold', color: Colors.primary, fontSize: 16 }}
@@ -38,16 +63,16 @@ const JobCard = ({ item, next, onToggleSave }) => {
                 />
                 
                 <Card.Content style={{ paddingLeft: 70 }}> 
-                    <Text variant="bodyMedium" style={localStyles.salary}>
-                        Lương: {item.is_negotiable ? "Thỏa thuận" : `${item.salary_min?.toLocaleString('vi-VN')} VNĐ`}
+                    <Text variant="bodyMedium" style={JobCardStyles.salary}>
+                        {getSalaryText()}
                     </Text>
                     
-                    <View style={localStyles.row}>
-                        <Text variant="bodySmall" style={localStyles.location}>
+                    <View style={JobCardStyles.row}>
+                        <Text variant="bodySmall" style={JobCardStyles.location}>
                             📍 {item.location || "Chưa cập nhật"}
                         </Text>
-                        <Text variant="bodySmall" style={localStyles.date}>
-                            ⏳ {moment(item.updated_at).fromNow()}
+                        <Text variant="bodySmall" style={JobCardStyles.date}>
+                             {moment(item.updated_at).fromNow()}
                         </Text>
                     </View>
                 </Card.Content>
@@ -55,33 +80,5 @@ const JobCard = ({ item, next, onToggleSave }) => {
         </TouchableOpacity>
     );
 };
-
-const localStyles = StyleSheet.create({
-    card: { 
-        marginBottom: 15, 
-        backgroundColor: "white", 
-        elevation: 2,
-        borderRadius: 10 
-    },
-    salary: { 
-        color: "#d32f2f", 
-        fontWeight: "bold", 
-        marginBottom: 8 
-    },
-    row: { 
-        flexDirection: "row", 
-        justifyContent: "space-between",
-        alignItems: "center" 
-    },
-    location: { 
-        color: "#555",
-        flex: 1, // Để chữ quá dài không bị đẩy icon thời gian
-        marginRight: 10 
-    },
-    date: { 
-        color: "#888", 
-        fontStyle: 'italic' 
-    }
-});
 
 export default JobCard;

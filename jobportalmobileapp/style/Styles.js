@@ -55,12 +55,7 @@ const Styles = StyleSheet.create({
     borderRadius: 8,
   },
 
-  //Man hinh account
-  greenBackground: {
-    backgroundColor: "#00bfa5",
-    height: 130,
-    width: "100%",
-  },
+  // Profile Header (Component chung - dùng ở nhiều screen)
   infoCard: {
     backgroundColor: "white",
     marginHorizontal: 16,
@@ -91,21 +86,12 @@ const Styles = StyleSheet.create({
     fontSize: 13,
     color: "#666",
   },
-  body: {
-    marginTop: 20,
-    paddingHorizontal: 16,
-  },
+
+  // Account Screen Specific (nhưng giữ ở global vì ProfileHeader + SettingItem dùng)
   menuGroup: {
     backgroundColor: "white",
     borderRadius: 12,
     overflow: "hidden",
-  },
-  logoutBox: {
-    padding: 7,
-    borderRadius: 12,
-    margin: 15,
-    alignItems: "center",
-    backgroundColor: Colors.lightGray || "#e0e0e0",
   },
 });
 

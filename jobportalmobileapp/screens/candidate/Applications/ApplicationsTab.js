@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, View, RefreshControl, StyleSheet, Alert } from "react-native";
+import { ActivityIndicator, FlatList, View, RefreshControl, Alert } from "react-native";
 import { Text } from "react-native-paper";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { authApis, endpoints } from "../../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Styles from "../../../style/Styles";
+import GlobalStyles from "../../../style/Styles";
+import ScreenStyles from "./Styles";
 import Colors from "../../../theme/Color";
 import ApplicationCard from "../../../components/candidate/ApplicationCard";
 
@@ -89,14 +90,14 @@ const ApplicationsTab = () => {
 
     if (loading && page === 1) {
         return (
-            <View style={[Styles.container, localStyles.centered]}>
+            <View style={[GlobalStyles.container, ScreenStyles.centered]}>
                 <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     return (
-        <View style={[Styles.container, Styles.padding, { backgroundColor: "#f8f9fa" }]}>
+        <View style={[GlobalStyles.container, GlobalStyles.padding, { backgroundColor: "#f8f9fa" }]}>
             <FlatList
                 data={applications}
                 keyExtractor={(item) => item.id.toString()}
@@ -108,8 +109,8 @@ const ApplicationsTab = () => {
                 onEndReachedThreshold={0.2}
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={
-                    <View style={localStyles.emptyContainer}>
-                        <Text style={localStyles.emptyText}>Bạn chưa ứng tuyển công việc nào.</Text>
+                    <View style={ScreenStyles.emptyContainer}>
+                        <Text style={ScreenStyles.emptyText}>Bạn chưa ứng tuyển công việc nào.</Text>
                     </View>
                 }
                 renderItem={({ item }) => (
@@ -122,11 +123,5 @@ const ApplicationsTab = () => {
         </View>
     );
 };
-
-const localStyles = StyleSheet.create({
-    centered: { justifyContent: "center", alignItems: "center" },
-    emptyContainer: { alignItems: "center", marginTop: 80, paddingHorizontal: 20 },
-    emptyText: { fontSize: 16, fontWeight: "bold", color: "#555" }
-});
 
 export default ApplicationsTab;

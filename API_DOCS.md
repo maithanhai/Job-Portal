@@ -13,9 +13,6 @@
 | 10  | **Job**     | `/api/jobs/`                     |   POST    | Nhà tuyển dụng đăng tin mới              |   Đã làm   |
 | 11  | **Job**     | `/api/jobs/{id}/`                | PUT/PATCH | Chỉnh sửa nội dung tin tuyển dụng        |   Đã làm   |
 | 12  | **Job**     | `/api/jobs/{id}/`                |  DELETE   | Xóa hoặc ẩn tin tuyển dụng               |   Đã làm   |
-| 13  | **Resume**  | `/api/resumes/`                  |   POST    | Tải lên bản hồ sơ CV mới                 |   Đã làm   |
-| 14  | **Resume**  | `/api/resumes/`                  |    GET    | Xem danh sách các CV đã tải lên          |   Đã làm   |
-| 15  | **Resume**  | `/api/resumes/{id}/`             |  DELETE   | Xóa hồ sơ CV khỏi hệ thống               |   Đã làm   |
 | 16  | **Action**  | `/api/applications/`             |   POST    | Nộp hồ sơ ứng tuyển vào vị trí công việc |   Đã làm   |
 | 17  | **Action**  | `/api/saved-jobs/`               |   POST    | Lưu tin tuyển dụng vào mục yêu thích     |   Đã làm   |
 | 18  | **Action**  | `/api/saved-jobs/`               |    GET    | Xem danh sách việc làm đã lưu            |   Đã làm   |
