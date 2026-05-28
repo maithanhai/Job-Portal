@@ -1,35 +1,53 @@
 import { StyleSheet } from "react-native";
-import Color from "../../theme/Color";
+import Colors from "../../theme/Color";
 
 export default StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
-        backgroundColor: "#fff",
-        marginTop: 50
+        backgroundColor: Colors.white,
     },
-    padding: {
-        padding: 20,
+    loginScroll: {
+        flexGrow: 1,
         justifyContent: 'center',
-        flex: 1,
-        marginTop: 50
     },
-    title: {
-        fontSize: 30,
+    registerScroll: {
+        flexGrow: 1,
+        paddingBottom: 40,
+    },
+    avatarContainer: {
+        alignItems: "center",
+        marginVertical: 10,
+    },
+    imagePreview: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+    },
+    avatarIcon: {
+        backgroundColor: Colors.bg.light,
+    },
+    avatarText: {
+        fontSize: 12,
+        color: Colors.primary,
+        marginTop: 5,
         fontWeight: 'bold',
-        color: Color.primary,
-        textAlign: 'center',
-        marginBottom: 30
     },
-    rowCenter: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 20
+    segmentedButtons: {
+        marginHorizontal: 20,
+        marginBottom: 20,
     },
-    linkText: {
-        color: Color.primary,
-        fontWeight: 'bold'
+    activeSegmentButton: {
+        backgroundColor: Colors.primary,
     },
-    margin:{
-        margin: 5,
-    }
+    inputContainer: {
+        paddingHorizontal: 20,
+    },
+    registerBtnSpacer: {
+        marginHorizontal: 20,
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    signupPromptText: {
+        color: Colors.text.secondary,
+    },
 });

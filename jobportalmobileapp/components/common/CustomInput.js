@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import Colors from '../../theme/Color';
+import Styles from './Styles';
 
 const CustomInput = ({ 
     label, 
@@ -9,7 +10,8 @@ const CustomInput = ({
     value, 
     onChangeText, 
     keyboardType = 'default',
-    style 
+    style ,
+    disabled = false,
 }) => {
     const [hidePassword, setHidePassword] = useState(isPassword);
 
@@ -21,6 +23,7 @@ const CustomInput = ({
             mode="outlined"
             keyboardType={keyboardType}
             secureTextEntry={hidePassword}
+            disabled={disabled}
             left={icon ? <TextInput.Icon icon={icon} color={Colors.gray} /> : null}
             right={
                 isPassword ? (
@@ -35,7 +38,7 @@ const CustomInput = ({
             outlineColor={Colors.lightGray}
             activeOutlineColor={Colors.primary} 
             
-            style={[{ marginBottom: 15, backgroundColor: 'white' }, style]}
+            style={[Styles.customInput, style]}
         />
     );
 };

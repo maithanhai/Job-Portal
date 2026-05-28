@@ -5,8 +5,8 @@ import Colors from '../../theme/Color';
 import Styles from '../../style/Styles';
 
 const ProfileHeader = ({ user, onPress }) => {
-    const fullName = user?.first_name 
-        ? `Chào bạn, ${user.first_name}`.trim() 
+    const fullName = user?.last_name 
+        ? `Chào bạn, ${user.last_name}`.trim() 
         : (user?.company_name || "Tài khoản của tôi"); 
 
     const roleText =
@@ -24,8 +24,8 @@ const ProfileHeader = ({ user, onPress }) => {
             <View style={Styles.avatarWrapper}>
                 <Avatar.Image
                     size={70}
-                    source={{ uri: avatarUri || "https://digitalhealthskills.com/no-user-image-icon-27/" }}
-                    style={{ backgroundColor: Colors.grey }}
+                    source={avatarUri ? { uri: avatarUri } : require('../../assets/default-avatar.webp')}
+                    style={{ backgroundColor: Colors.bg.light }}
                 />
             </View>
             <View style={Styles.textContainer}>

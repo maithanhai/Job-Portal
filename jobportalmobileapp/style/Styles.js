@@ -2,19 +2,22 @@ import { StyleSheet } from "react-native";
 import Colors from "../theme/Color";
 
 const Styles = StyleSheet.create({
-  //Layout chung
   container: {
     flex: 1,
-    marginTop: 50,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.white,
   },
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: "#f4f5f7",
+    backgroundColor: Colors.bg.lighter,
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  rowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   margin: {
     margin: 5,
@@ -26,11 +29,10 @@ const Styles = StyleSheet.create({
     padding: 20,
   },
 
-  //Chu va tieu de
   subject: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "blue",
+    color: Colors.primary,
   },
   title: {
     fontSize: 24,
@@ -39,15 +41,19 @@ const Styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+  linkText: {
+    color: Colors.primary,
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 
-  // Form va nut bam
   header: {
     alignItems: "center",
     padding: 20,
   },
   input: {
     marginBottom: 15,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
   },
   btn: {
     marginTop: 10,
@@ -55,9 +61,8 @@ const Styles = StyleSheet.create({
     borderRadius: 8,
   },
 
-  // Profile Header (Component chung - dùng ở nhiều screen)
   infoCard: {
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     marginHorizontal: 16,
     marginTop: -60,
     borderRadius: 12,
@@ -79,19 +84,28 @@ const Styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: Colors.text.primary,
     marginBottom: 4,
   },
   userRole: {
     fontSize: 13,
-    color: "#666",
+    color: Colors.text.secondary,
   },
 
-  // Account Screen Specific (nhưng giữ ở global vì ProfileHeader + SettingItem dùng)
   menuGroup: {
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     borderRadius: 12,
     overflow: "hidden",
+  },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    elevation: 2,
   },
 });
 

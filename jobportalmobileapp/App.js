@@ -6,23 +6,28 @@ import { Icon, Provider as PaperProvider } from "react-native-paper";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaProvider } from 'react-native-safe-area-context'; // 1. IMPORT THÊM ĐOẠN NÀY
 import Colors from "./theme/Color";
 
 import Login from "./screens/auth/Login";
 import Register from "./screens/auth/Register";
 
-import HomeTab from "./screens/candidate/Home/HomeTab";
-import SavedJobsTab from "./screens/candidate/SavedJobs/SavedJobsTab";
-import ApplicationsTab from "./screens/candidate/Applications/ApplicationsTab";
-import CandidateAccountTab from "./screens/candidate/Account/CandidateAccountTab";
+import HomeCandidateTab from "./screens/candidate/home/HomeCandidateTab";
+import SavedJobsTab from "./screens/candidate/savedjob/SavedJobsTab";
+import ApplicationsTab from "./screens/candidate/application/ApplicationsTab";
+import CandidateAccountTab from "./screens/candidate/account/CandidateAccountTab";
 import UserDetail from "./components/common/UserDetail";
-import ChangePassword from "./components/common/ChangePassword";
-
-import DashboardTab from "./screens/employer/Dashboard/DashboardTab";
-import MyJobsTab from "./screens/employer/MyJobs/MyJobsTab";
-import CandidatesTab from "./screens/employer/Candidates/CandidatesTab";
-import EmployerAccountTab from "./screens/employer/Account/EmployerAccountTab";
-import JobDetail from "./screens/candidate/Home/JobDetail";
+import ChangePassword from "./screens/auth/ChangePassword";
+import MyJobsTab from "./screens/employer/myjob/MyJobsTab";
+import CandidatesTab from "./screens/employer/candidate/CandidatesTab";
+import EmployerAccountTab from "./screens/employer/account/EmployerAccountTab";
+import JobDetail from "./components/common/JobDetail";
+import EmployerProfile from "./screens/employer/account/EmployerProfile";
+import JobForm from "./screens/employer/myjob/JobForm";
+import CandidateDetail from "./screens/employer/candidate/CandidateDetail";
+import CompareJobs from "./screens/candidate/home/CompareJobs";
+import HomeEmployerTab from "./screens/employer/home/HomeEmployerTab";
+import ApplicationDetail from "./screens/candidate/application/ApplicationDetail";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -48,11 +53,11 @@ const CandidateTabs = () => {
           fontWeight: "bold",
         },
       }}
-      initialRouteName="Home"
+      initialRouteName="Trang chủ"
     >
       <Tab.Screen
-        name="Home"
-        component={HomeTab}
+        name="Trang chủ"
+        component={HomeCandidateTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
             <Icon source={focused ? "home" : "home-outline"} size={30} color={color} />
@@ -60,7 +65,7 @@ const CandidateTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Saved Jobs"
+        name="Đã lưu"
         component={SavedJobsTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
@@ -69,7 +74,7 @@ const CandidateTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Applications"
+        name="Đơn ứng tuyển"
         component={ApplicationsTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
@@ -78,7 +83,7 @@ const CandidateTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Account"
+        name="Tài khoản"
         component={CandidateAccountTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
@@ -102,19 +107,19 @@ const EmployerTabs = () => {
           fontWeight: "bold",
         },
       }}
-      initialRouteName="Dashboard"
+      initialRouteName="Trang chủ"
     >
       <Tab.Screen
-        name="Dashboard"
-        component={DashboardTab}
+        name="Trang chủ"
+        component={HomeEmployerTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
-            <Icon source={focused ? "view-dashboard" : "view-dashboard-outline"} size={30} color={color} />
+            <Icon source={focused ? "home" : "home-outline"} size={30} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="My Jobs"
+        name="Công việc"
         component={MyJobsTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
@@ -123,7 +128,7 @@ const EmployerTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Candidates"
+        name="Ứng viên"
         component={CandidatesTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
@@ -132,11 +137,11 @@ const EmployerTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Account"
+        name="Tài khoản"
         component={EmployerAccountTab}
         options={{
           tabBarIcon: ({ focused, color }) => (
-            <Icon source={focused ? "domain" : "domain"} size={30} color={color} />
+            <Icon source={focused ? "account" : "account-outline"} size={30} color={color} />
           ),
         }}
       />
@@ -173,46 +178,73 @@ const App = () => {
   }
 
   return (
-    <MyUserContext.Provider value={[user, dispatch]}>
-      <PaperProvider>
-        <NavigationContainer>
-          {user === null ? (
-            <AuthStack />
-          ) : (
-            <Stack.Navigator>
-              {user.role === "CANDIDATE" ? (
+    <SafeAreaProvider>
+      <MyUserContext.Provider value={[user, dispatch]}>
+        <PaperProvider>
+          <NavigationContainer>
+            {user === null ? (
+              <AuthStack />
+            ) : (
+              <Stack.Navigator>
+                {user.role === "CANDIDATE" ? (
+                  <Stack.Screen
+                    name="MainTabs"
+                    component={CandidateTabs}
+                    options={{ headerShown: false }}
+                  />
+                ) : (
+                  <Stack.Screen
+                    name="MainTabs"
+                    component={EmployerTabs}
+                    options={{ headerShown: false }}
+                  />
+                )}
                 <Stack.Screen
-                  name="MainTabs"
-                  component={CandidateTabs}
-                  options={{ headerShown: false }}
+                  name="UserDetail"
+                  component={UserDetail}
+                  options={{ title: "Hồ sơ cá nhân" }}
                 />
-              ) : (
                 <Stack.Screen
-                  name="MainTabs"
-                  component={EmployerTabs}
-                  options={{ headerShown: false }}
+                  name="ChangePassword"
+                  component={ChangePassword}
+                  options={{ title: "Đổi mật khẩu" }}
                 />
-              )}
-              <Stack.Screen
-                name="UserDetail"
-                component={UserDetail}
-                options={{ title: "Hồ sơ cá nhân" }}
-              />
-              <Stack.Screen
-                name="ChangePassword"
-                component={ChangePassword}
-                options={{ title: "Đổi mật khẩu" }}
-              />
-              <Stack.Screen
-                name="JobDetail"
-                component={JobDetail}
-                options={{ title: "Chi tiết công việc" }}
-              />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
-      </PaperProvider>
-    </MyUserContext.Provider>
+                <Stack.Screen
+                  name="JobDetail"
+                  component={JobDetail}
+                  options={{ title: "Chi tiết công việc" }}
+                />
+                <Stack.Screen
+                  name="EmployerProfile"
+                  component={EmployerProfile}
+                  options={{ title: "Thông tin xác thực Doanh nghiệp" }}
+                />
+                <Stack.Screen
+                  name="JobForm"
+                  component={JobForm}
+                  options={{ title: "Thông tin tuyển dụng" }}
+                />
+                <Stack.Screen
+                  name="CandidateDetail"
+                  component={CandidateDetail}
+                  options={{ title: "Chi tiết ứng viên" }}
+                />
+                <Stack.Screen
+                  name="CompareJobs"
+                  component={CompareJobs}
+                  options={{ title: "So sánh công việc" }}
+                />
+                <Stack.Screen
+                  name="ApplicationDetail"
+                  component={ApplicationDetail}
+                  options={{ title: "Chi tiết đơn ứng tuyển" }}
+                />
+              </Stack.Navigator>
+            )}
+          </NavigationContainer>
+        </PaperProvider>
+      </MyUserContext.Provider>
+    </SafeAreaProvider>
   );
 };
 
