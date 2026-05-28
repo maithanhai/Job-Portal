@@ -135,10 +135,9 @@ const EmployerProfile = () => {
 
       if (res.status === 200 || res.status === 204) {
         Alert.alert("Thành công", "Đã cập nhật!");
-        // Don't force is_verified to false - let server decide verification status
         const updatedData = { 
             ...employerData, 
-            is_verified: res.data.is_verified !== undefined ? res.data.is_verified : employerData.is_verified
+            is_verified: false 
         };
         
         setEmployerData(updatedData);
@@ -146,7 +145,7 @@ const EmployerProfile = () => {
 
         dispatch({
             type: "LOGIN",
-            payload: { ...user, is_verified: updatedData.is_verified }
+            payload: { ...user, is_verified: false }
         });
 
         setLocalImageToUpload(null);

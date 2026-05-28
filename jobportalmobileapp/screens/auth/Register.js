@@ -24,8 +24,8 @@ const Register = () => {
   });
 
   const commonFields = [
-    { field: "last_name", label: "Họ và tên đệm", icon: "account-box" },
-    { field: "first_name", label: "Tên", icon: "account-box" },
+    { field: "first_name", label: "Họ và tên đệm", icon: "account-box" },
+    { field: "last_name", label: "Tên", icon: "account-box" },
     { field: "email", label: "Email", icon: "email-outline", keyboardType: "email-address" },
     { field: "phone_number", label: "Số điện thoại", icon: "phone", keyboardType: "phone-pad" },
     { field: "username", label: "Tên tài khoản", icon: "account", autoCapitalize: "none" },

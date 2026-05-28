@@ -55,7 +55,7 @@ const ApplicationDetail = ({ route, navigation }) => {
         case 'ACCEPTED': return "Đã chấp nhận";
         case 'REJECTED': return "Đã từ chối";
         case 'REVIEWING': return "Nhà tuyển dụng đang xem";
-        default: return "Đã nộp thành công";
+        default: return "Chờ duyệt";
     }
   };
 
