@@ -28,7 +28,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def save(self, *args, **kwargs):
         if self.is_superuser and self.role != self.ADMIN:
@@ -59,17 +59,20 @@ class BaseModel(models.Model):
 
 class Candidate(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    skills = models.ManyToManyField('Skill', blank=True)
 
     def __str__(self):
-        return self.user.email
+        return self.user.username
 
 
 class Employer(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100)
+    logo_company = CloudinaryField('logo', null=True, blank=True)
     location = models.CharField(max_length=100, null=True)
     is_verified = models.BooleanField(default=False)
+    tax_code = models.CharField(max_length=50, null=True, blank=True)
+    employee_card = CloudinaryField('employee_card', null=True, blank=True)
+    read_only_fields = ['is_verified']
 
     def __str__(self):
         return self.company_name
@@ -82,18 +85,19 @@ class Category(BaseModel):
     def __str__(self):
         return self.name
 
-
 class Job(BaseModel):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     employer = models.ForeignKey(Employer, on_delete=models.PROTECT, related_name='jobs')
     location = models.CharField(max_length=255)
+
     description = RichTextField()
-    salary_min = models.PositiveIntegerField(null=True, blank=True, help_text="Mức lương thấp nhất (VNĐ)")
-    salary_max = models.PositiveIntegerField(null=True, blank=True, help_text="Mức lương cao nhất (VNĐ)")
-    is_negotiable = models.BooleanField(default=False, help_text="Lương thoả thuận")
-    skill = models.ManyToManyField('Skill', blank=True)
-    is_premium = models.BooleanField(default=False)
+    requirements = RichTextField(null=True, blank=True)
+    benefits = RichTextField(null=True, blank=True)
+
+    salary_min = models.PositiveIntegerField(null=True, blank=True)
+    salary_max = models.PositiveIntegerField(null=True, blank=True)
+    is_negotiable = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -110,24 +114,12 @@ class Application(BaseModel):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='applications')
     job = models.ForeignKey(Job, on_delete=models.PROTECT)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-
-    file_cv = CloudinaryField('raw', null=False, blank=False, help_text="File tài liệu CV ứng tuyển")
+    review_comment = models.TextField(null=True, blank=True)
+    file_cv = CloudinaryField(null=False, blank=False)
     cover_letter = models.TextField(max_length=500, blank=True)
 
     def __str__(self):
-        return f"{self.candidate.user.email} nộp vào {self.job.name}"
-
-
-class Payment(BaseModel):
-    employer = models.ForeignKey(Employer, on_delete=models.PROTECT)
-    job = models.ForeignKey(Job, on_delete=models.PROTECT)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    method = models.CharField(max_length=100)
-    status = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Thanh toán {self.amount} của {self.employer.company_name}"
-
+        return f"Tài khoản '{self.candidate.user.username}' ứng tuyển vào {self.job.name}"
 
 class SavedJob(BaseModel):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='saved_jobs')
@@ -137,13 +129,4 @@ class SavedJob(BaseModel):
         unique_together = ('candidate', 'job')
 
     def __str__(self):
-        # ĐÃ SỬA: Thay full_name bằng email
-        return f"{self.candidate.user.email} đã lưu {self.job.name}"
-
-
-class Skill(BaseModel):
-    name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
+        return f"Tài khoản '{self.candidate.user.username}' đã lưu {self.job.name}"

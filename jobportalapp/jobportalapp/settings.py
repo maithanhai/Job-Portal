@@ -13,30 +13,21 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-$!o!vsj621l!qlrl79)-7ugfk7sdch1y%5x&pi3ltg*$fsrb+2'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "jobs.User"
 
-cloud_name = 'thanhai'
-
 import cloudinary.api
 cloudinary.config(
-    cloud_name=cloud_name,
-    api_key='837549944776194',
-    api_secret='h4FQ4oJTptyewpDhijZSxBR0NnY'
+    cloud_name='dlo2e1goo',
+    api_key='824172995696766',
+    api_secret='DH7-axX5kkk3fUdCQNsMmxy4V4U'
 )
 
 CKEDITOR_UPLOAD_PATH = 'images/ckeditors/'
@@ -102,9 +93,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'jobportalapp.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -115,9 +103,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -135,9 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -147,10 +129,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = 'static/'
 
-CLIENT_ID='YHw5vV0PavCuqodtdVJfGEPM0ePdgDMBozhrYaId'
-CLIENT_SECRET='UrFOG7zlLkhCS8sgiK0M8tGbVeSVzRjc943CJBCwJqTfcPfUJUBVAXry7T3TKIfFaEyc26uT3K1nw7LWVMdH130GzQ4haggJRw41piKIXgsmpHxm4xlSuznnF9pk2wJf'
+CLIENT_ID='sAlOJlY4I6znBv8I02YUOGEnB3BgbHfjM8v2702b'
+CLIENT_SECRET='Tm9mRyYIRcKvTq5YVu35TLG6HWKMTkX9OzY6j54V8QuaHHjUBhBPkA2UdEAHuZj816bDmg4V3v5Bez0jCy9Zd83Ky1M8KjZy6IW0RvxiFzoY1pnDcRaPONDjXLQPDLbq'
