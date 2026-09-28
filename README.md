@@ -1,8 +1,6 @@
-# 💼 HỆ THỐNG SÀN VIỆC LÀM TRỰC TUYẾN
+# HỆ THỐNG SÀN VIỆC LÀM TRỰC TUYẾN
 
-> **Bài tập lớn môn "Các công nghệ lập trình hiện đại"** - Hệ thống hỗ trợ đăng tuyển, tìm kiếm và ứng tuyển việc làm trực tuyến với đầy đủ các tính năng dành cho Quản trị viên, Nhà tuyển dụng và Ứng viên.
-
-## 👥 THÀNH VIÊN THỰC HIỆN
+##  THÀNH VIÊN THỰC HIỆN
 
 | STT | Họ và tên | Mã số sinh viên |
 | :---: | :--- | :---: |
@@ -10,7 +8,7 @@
 
 ---
 
-## 🚀 CÔNG NGHỆ SỬ DỤNG
+##  CÔNG NGHỆ SỬ DỤNG
 
 ### Backend
 * **Ngôn ngữ:** Python 3.x
@@ -28,7 +26,7 @@
 
 ---
 
-## ✨ CHỨC NĂNG CHÍNH
+##  CHỨC NĂNG CHÍNH
 
 ### 1. Phân hệ Admin (Quản trị viên)
 * **Quản lý người dùng:** Phân quyền và quản lý tài khoản Ứng viên, Nhà tuyển dụng.
@@ -48,7 +46,7 @@
 
 ---
 
-## 🛠 HƯỚNG DẪN CÀI ĐẶT
+##  HƯỚNG DẪN CÀI ĐẶT
 
 **Bước 1: Clone dự án về máy**
 ```bash
